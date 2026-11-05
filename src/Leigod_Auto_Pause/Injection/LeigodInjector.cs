@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -7,6 +7,7 @@ using System.Net.Sockets;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json.Nodes;
+	
 
 
 
@@ -140,8 +141,24 @@ namespace Leigod_Auto_Pause.Injection
 
 
             await cdp.SendAsync("Debugger.resume");
+       
             Console.WriteLine("已放行");
+
+            try
+            {
+                await cdp.SendAsync("Runtime.evaluate", new JsonObject
+                {
+                    ["expression"] = "try{process._debugEnd()}catch(e){}"
+                });
+            }
+            catch
+            {
+               
+            }
+
+            Console.WriteLine("已关闭调试端口");
             return true;
+           
 
         }
         private static async Task<string?> WaitWsUrlAsync(int port)
